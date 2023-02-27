@@ -1,3 +1,4 @@
+import { Box, Button, Stack } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -24,6 +25,7 @@ const Canvas = () => {
 
         drawRule();
     }, []);
+
     useEffect(() => {
         console.log(color);
         const canvas = document.getElementById('MyCanvas');
@@ -31,7 +33,16 @@ const Canvas = () => {
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = color;
 
-    }, [color,searchParams])
+    }, [color, searchParams])
+
+    const initCanvas = () => {
+        const canvas = document.getElementById('MyCanvas');
+
+        const ctx = canvas.getContext('2d');
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawRule();
+    }
 
     // キャンバスに罫線を描画する
     const drawRule = () => {
@@ -114,9 +125,18 @@ const Canvas = () => {
     };
 
     return (
-        <div>
-            <canvas id='MyCanvas'></canvas>
-        </div>
+        <Stack direction="column" sx={{ width: "50%" }}>
+            <Box sx={{ height: "70vh" }}>
+                <canvas id='MyCanvas'></canvas>
+            </Box>
+
+            <Box sx={{ height: "30vh" }}>
+                <Button onClick={() => { initCanvas() }} variant="outlined">全部消す</Button>
+                <Button onClick={() => { initCanvas() }} variant="outlined">跡形もなく消す</Button>
+                <Button onClick={() => { initCanvas() }} variant="outlined">保存</Button>
+            </Box>
+        </Stack>
+
     );
 };
 
