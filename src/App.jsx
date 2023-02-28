@@ -1,4 +1,4 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Home from './Components/Home.jsx';
@@ -32,8 +32,8 @@ function App() {
 
   return (
     <div>
-      {auth.currentUser ? <Home /> : <button onClick={signIn}>Login</button>}
-    </div>
+      {auth.currentUser ? <Home /> : <button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", height: "100px", marginTop: "25%", marginLeft: "50%", color: "white", outlineWidth: "8px" }} onClick={signIn}>ろぐいん！</button>}
+    </div >
   );
 }
 

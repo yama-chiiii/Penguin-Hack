@@ -19,6 +19,8 @@ const Canvas = () => {
         const auth = getAuth();
         getDownloadURL(ref(getStorage(), `canvaMental/${auth.currentUser.uid}`)).then((url) => {
             chara.src = url;
+            chara.crossOrigin = "anonymous";
+
         }).catch((error) => {
             console.log(error);
             const localStorageImage = localStorage.getItem('imgBase64');

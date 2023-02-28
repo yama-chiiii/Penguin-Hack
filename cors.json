@@ -1,0 +1,7 @@
+[{
+    "origin": ["https://penguin-hack.vercel.app/","http://localhost:3000"],
+    "resposeHeader":["*"],
+    "method":["GET"],
+    "maxAgeSeconds":86400
+
+}]
