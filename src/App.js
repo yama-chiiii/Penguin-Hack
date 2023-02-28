@@ -4,8 +4,15 @@ import Home from './Components/Home.jsx';
 
 function App() {
   return (
-    <Home />
+    <div>
+      <Home />
+    </div>
   );
 }
 
 export default App;
+
+
+
+
+

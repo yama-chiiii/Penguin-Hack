@@ -2,6 +2,7 @@ import { Box, Button, Stack } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+
 const Canvas = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const color = searchParams.get('color');
@@ -23,11 +24,19 @@ const Canvas = () => {
         canvas.addEventListener('mousedown', OnMousedown);
         canvas.addEventListener('mousemove', OnMousemove);
 
+        const chara = new Image();
+        chara.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
+        chara.onload = () => {
+            console.log("test")
+            ctx.drawImage(chara, 0, 0, canvas.width, canvas.height);
+        };
+
         drawRule();
+
     }, []);
 
     useEffect(() => {
-        console.log(color);
+        //console.log(color);
         const canvas = document.getElementById('MyCanvas');
 
         const ctx = canvas.getContext('2d');
@@ -35,7 +44,8 @@ const Canvas = () => {
 
     }, [color, searchParams])
 
-    const initCanvas = () => {
+    //黒含め消すやつ
+    const clearCanvas = () => {
         const canvas = document.getElementById('MyCanvas');
 
         const ctx = canvas.getContext('2d');
@@ -43,6 +53,25 @@ const Canvas = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawRule();
     }
+
+    //黒は残し消すやつ
+    const initCanvas = () => {
+        const canvas = document.getElementById('MyCanvas');
+        const ctx = canvas.getContext('2d');
+        //const imagedata = ctx.getImageData(canvas_width * canvas_magnification, canvas_height * canvas_magnification, 1, 1);
+
+        if (searchParams !== "black") {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawRule();
+        }
+    }
+
+    //保存する
+    const saveCanvas = () => {
+        const json = JSON.stringify(searchParams);
+        localStorage.setElementById("searchParams", json);
+    }
+
 
     // キャンバスに罫線を描画する
     const drawRule = () => {
@@ -127,13 +156,12 @@ const Canvas = () => {
     return (
         <Stack direction="column" sx={{ width: "50%" }}>
             <Box sx={{ height: "70vh" }}>
-                <canvas id='MyCanvas'></canvas>
+                <canvas style={{ marginTop: "50px", marginLeft: "100px", outlineStyle: "solid", outlineColor: "pink" }} id='MyCanvas'></canvas>
             </Box>
 
             <Box sx={{ height: "30vh" }}>
-                <Button onClick={() => { initCanvas() }} variant="outlined">全部消す</Button>
-                <Button onClick={() => { initCanvas() }} variant="outlined">跡形もなく消す</Button>
-                <Button onClick={() => { initCanvas() }} variant="outlined">保存</Button>
+                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ marginTop: '120px' }} onClick={() => { initCanvas() }} variant="contained">くりあ</Button>
+                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ marginLeft: "20px", marginTop: '120px' }} onClick={() => { saveCanvas() }} variant="contained">ほぞん</Button>
             </Box>
         </Stack>
 
