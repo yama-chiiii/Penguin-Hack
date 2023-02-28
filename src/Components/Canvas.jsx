@@ -1,4 +1,6 @@
 import { Box, Button, Stack } from '@mui/material';
+import { getAuth } from 'firebase/auth';
+import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage';
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -13,16 +15,21 @@ const Canvas = () => {
     const canvas_magnification = 25 // 表示倍率
 
     useEffect(() => {
-        const localStorageImage = localStorage.getItem('imgBase64');
         const chara = new Image();
+        const auth = getAuth();
+        getDownloadURL(ref(getStorage(), `canvaMental/${auth.currentUser.uid}`)).then((url) => {
+            chara.src = url;
+        }).catch((error) => {
+            console.log(error);
+            const localStorageImage = localStorage.getItem('imgBase64');
 
-        if (localStorageImage) {
-            chara.src = localStorageImage;
-        }
-        else {
-            chara.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
-        }
-
+            if (localStorageImage) {
+                chara.src = localStorageImage;
+            }
+            else {
+                chara.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
+            }
+        });
 
         const canvas = document.getElementById('MyCanvas');
 
@@ -73,8 +80,41 @@ const Canvas = () => {
     const saveCanvas = () => {
         const canvas = document.getElementById('MyCanvas');
         const imgBase64 = canvas.toDataURL();
-        localStorage.setItem('imgBase64', imgBase64);
+        const data = imgBase64.replace(/^data:image\/\w+;base64,/, "");
+        // const buf = new Buffer(data, 'base64');
+        // localStorage.setItem('imgBase64', imgBase64);
+
+        const auth = getAuth();
+        const storage = getStorage();
+        const imageRef = ref(storage, `canvaMental/${auth.currentUser.uid}`);
+
+        const uploadTask = uploadString(imageRef, data, 'base64');
+
+        // uploadTask.on('state_changed', (snapshot) => {
+        //     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        //     console.log('Upload is' + progress + '% done');
+        // }, (error) => {
+        //     console.log(error);
+        // }, () => {
+        //     getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        //         console.log(url);
+        //         // localStorage.setItem('imgBase64', url);
+        //         const chara = new Image();
+        //         chara.src = url;
+
+
+        //         const canvas = document.getElementById('MyCanvas');
+
+        //         const ctx = canvas.getContext('2d');
+
+        //         chara.onload = () => {
+        //             ctx.drawImage(chara, 0, 0, canvas.width, canvas.height);
+        //         };
+        //     });
+        // });
     }
+
+
 
 
     // キャンバスに罫線を描画する
@@ -165,8 +205,8 @@ const Canvas = () => {
             </Box>
 
             <Box sx={{ height: "30vh" }}>
-                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", marginLeft: "90px", marginTop: '100px' }} onClick={() => { initCanvas() }} variant="contained">くりあ</Button>
-                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", marginLeft: "300px", marginTop: '100px' }} onClick={() => { saveCanvas() }} variant="contained">ほぞん</Button>
+                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", marginTop: '50px', marginLeft: "225px" }} onClick={() => { initCanvas() }} variant="contained">くりあ</Button>
+                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", marginTop: '50px', marginLeft: "45px" }} onClick={() => { saveCanvas() }} variant="contained">ほぞん</Button>
             </Box>
         </Stack>
 
