@@ -6,70 +6,74 @@ import { useSearchParams } from 'react-router-dom';
 const Canvas = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const color = searchParams.get('color');
-    console.log(color)
+
 
     const canvas_width = 20;
     const canvas_height = 20;
     const canvas_magnification = 25 // 表示倍率
 
     useEffect(() => {
+        const localStorageImage = localStorage.getItem('imgBase64');
+        const chara = new Image();
+
+        if (localStorageImage) {
+            chara.src = localStorageImage;
+        }
+        else {
+            chara.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
+        }
+
+
         const canvas = document.getElementById('MyCanvas');
 
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = "white";
+        ctx.fillStyle = color;
+
+        chara.onload = () => {
+            ctx.drawImage(chara, 0, 0, canvas.width, canvas.height);
+        };
+
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         canvas.width = canvas_width * canvas_magnification;
         canvas.height = canvas_height * canvas_magnification;
 
         canvas.addEventListener('mousedown', OnMousedown);
         canvas.addEventListener('mousemove', OnMousemove);
 
-        const chara = new Image();
-        chara.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
-        chara.onload = () => {
-            console.log("test")
-            ctx.drawImage(chara, 0, 0, canvas.width, canvas.height);
-        };
-
         drawRule();
-
+        setSearchParams({})
     }, []);
 
     useEffect(() => {
-        //console.log(color);
         const canvas = document.getElementById('MyCanvas');
 
         const ctx = canvas.getContext('2d');
+        console.log(ctx.fillStyle)
         ctx.fillStyle = color;
-
+        console.log(ctx.fillStyle)
     }, [color, searchParams])
 
     //黒含め消すやつ
-    const clearCanvas = () => {
+    const initCanvas = () => {
         const canvas = document.getElementById('MyCanvas');
 
         const ctx = canvas.getContext('2d');
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const chara = new Image();
+        chara.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
+        chara.onload = () => {
+            ctx.drawImage(chara, 0, 0, canvas.width, canvas.height);
+        };
         drawRule();
-    }
-
-    //黒は残し消すやつ
-    const initCanvas = () => {
-        const canvas = document.getElementById('MyCanvas');
-        const ctx = canvas.getContext('2d');
-        //const imagedata = ctx.getImageData(canvas_width * canvas_magnification, canvas_height * canvas_magnification, 1, 1);
-
-        if (searchParams !== "black") {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawRule();
-        }
     }
 
     //保存する
     const saveCanvas = () => {
-        const json = JSON.stringify(searchParams);
-        localStorage.setElementById("searchParams", json);
+        const canvas = document.getElementById('MyCanvas');
+        const imgBase64 = canvas.toDataURL();
+        localStorage.setItem('imgBase64', imgBase64);
     }
 
 
@@ -116,8 +120,9 @@ const Canvas = () => {
 
         const canvas = document.getElementById('MyCanvas');
         const ctx = canvas.getContext('2d');
+        // ctx.fillStyle = color;
+        console.log(ctx.fillStyle)
 
-        ctx.fillStyle = color;
         ctx.fillRect(
             col * canvas_magnification,
             row * canvas_magnification,
@@ -141,7 +146,7 @@ const Canvas = () => {
             const canvas = document.getElementById('MyCanvas');
             const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = color;
+            // ctx.fillStyle = color;
             ctx.fillRect(
                 col * canvas_magnification,
                 row * canvas_magnification,
@@ -156,12 +161,12 @@ const Canvas = () => {
     return (
         <Stack direction="column" sx={{ width: "50%" }}>
             <Box sx={{ height: "70vh" }}>
-                <canvas style={{ marginTop: "50px", marginLeft: "100px", outlineStyle: "solid", outlineColor: "pink" }} id='MyCanvas'></canvas>
+                <canvas style={{ marginTop: "50px", marginLeft: "100px", outlineStyle: "solid", outlineColor: "#facaf8" }} id='MyCanvas'></canvas>
             </Box>
 
             <Box sx={{ height: "30vh" }}>
-                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ marginTop: '120px' }} onClick={() => { initCanvas() }} variant="contained">くりあ</Button>
-                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ marginLeft: "20px", marginTop: '120px' }} onClick={() => { saveCanvas() }} variant="contained">ほぞん</Button>
+                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", marginLeft: "90px", marginTop: '100px' }} onClick={() => { initCanvas() }} variant="contained">くりあ</Button>
+                <Button className=' bg-gradient-to-b from-pink-300 to-pink-600' style={{ width: "100px", marginLeft: "300px", marginTop: '100px' }} onClick={() => { saveCanvas() }} variant="contained">ほぞん</Button>
             </Box>
         </Stack>
 

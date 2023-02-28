@@ -25,7 +25,7 @@ const Home = () => {
                                     }}
                                     // onClick={() => { setColorIndex(color);console.log(colorIndex)
                                     // }}
-                                    style={{ paddingLeft: "60px", marginTop: "10px", width: "80px", height: "80px", backgroundColor: color }}
+                                    style={{ paddingLeft: "60px", marginTop: "10px", width: "80px", height: "80px", backgroundColor: color, outlineStyle: "solid", outlineColor: "#ba136f" }}
                                 />
                             )
                         })
