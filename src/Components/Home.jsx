@@ -6,7 +6,7 @@ import Canvas from "./Canvas";
 const Home = () => {
 
     const [colorIndex, setColorIndex] = useState("#ffffff");
-    const colorPallette = ['red', 'yellow', 'blue', 'gray', 'black']
+    const colorPallette = ['red', 'yellow', 'blue', 'gray']
     const [searchParams, setSearchParams] = useSearchParams();
     return (
 

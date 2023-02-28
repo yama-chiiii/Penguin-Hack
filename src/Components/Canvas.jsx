@@ -124,6 +124,12 @@ const Canvas = () => {
         const canvas = document.getElementById('MyCanvas');
         const ctx = canvas.getContext('2d');
 
+        const img = new Image();
+        img.src = `${process.env.PUBLIC_URL}/assets/black-hart.png`
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
+
         // 線の色
         ctx.strokeStyle = '#1e90ff';
 
